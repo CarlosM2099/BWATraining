@@ -1,0 +1,2 @@
+# BWATraining
+Blazor Training App
