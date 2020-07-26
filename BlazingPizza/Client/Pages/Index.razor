@@ -87,7 +87,7 @@
     }
     <div class="order-total @(order.Pizzas.Any() ? "" : "hidden")">
         Total:
-        <span vocab="total-price">@order.GetFormmattedTotalPrice()</span>
+        <span class="total-price">@order.GetFormattedTotalPrice()</span>
         <button class="btn btn-warning" disabled="@(order.Pizzas.Count == 0)" @onclick="@PlaceOrder">Ordenar ></button>
     </div>
 
