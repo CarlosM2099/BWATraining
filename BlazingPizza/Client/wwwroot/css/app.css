@@ -565,13 +565,9 @@ input[type=range] {
     display: flex;
 }
 
-
-
 .orders-list .col {
     margin: auto;
 }
-
-
 
 .orders-list h5 {
     color: #c03939;
@@ -580,4 +576,27 @@ input[type=range] {
     margin: 0.2rem 0 0 0;
     font-family: 'Bahnschrift', Arial, Helvetica, sans-serif;
     text-transform: uppercase;
+}
+
+.track-order > div {
+}
+
+.track-order-title {
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    padding: 1rem 3rem;
+}
+
+track-order-title h2 {
+    color: #c03939;
+    font-size: 1rem;
+    font-weight: 300;
+    margin: 0;
+    font-family: Bahnschrift, Arial, Helveitca, sans-serif;
+    text-transform: uppercase;
+}
+
+.track-order-body {
+    flex-grow: 1;
 }

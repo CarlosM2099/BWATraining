@@ -1,0 +1,78 @@
+﻿@page "/myorders/{orderId:int}"
+@inject HttpClient HttpClient;
+@using System.Threading;
+
+<div class="main">
+    @if (invalidOrder)
+    {
+        <h2>!No!</h2>
+        <p>Lo sentimos, esta orden no puede ser cargada</p>
+        <h1> :( </h1>
+    }
+    else
+    {
+        @if (order == null)
+        {
+            <text>Cargando</text>
+        }
+        else
+        {
+            <div class="track-order">
+                <div class="track-order-title">
+                    <h2>
+                        Pedido realizado
+                        @order.Order.CreatedTime.ToLongDateString();
+                    </h2>
+                    <p>
+                        Estatus: <strong>@order.StatusText</strong>
+                    </p>
+                </div>
+                <div class="track-order-body">
+                    Mostrar mas detalles...
+                </div>
+            </div>
+        }
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public int OrderId { get; set; }
+
+    OrderWithStatus order;
+    bool invalidOrder;
+
+    CancellationTokenSource pollingCancelationToken;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        pollingCancelationToken?.Cancel();
+        await PollingForUpdates();
+    }
+
+    private async Task PollingForUpdates()
+    {
+        pollingCancelationToken = new CancellationTokenSource();
+
+        while (!pollingCancelationToken.IsCancellationRequested)
+        {
+            try
+            {
+                invalidOrder = false;
+                order = await HttpClient.GetFromJsonAsync<OrderWithStatus>($"orders/{OrderId}");
+            }
+            catch (Exception e)
+            {
+                invalidOrder = true;
+                pollingCancelationToken.Cancel();
+                Console.Error.WriteLine(e);
+            }
+
+            StateHasChanged();
+            await Task.Delay(TimeSpan.FromSeconds(4));
+        }
+    }
+
+
+}
