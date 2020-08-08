@@ -60,7 +60,7 @@
             try
             {
                 invalidOrder = false;
-                order = await HttpClient.GetFromJsonAsync<OrderWithStatus>($"orders/{OrderId}");
+                order = await HttpClient.GetFromJsonAsync<OrderWithStatus>($"orders/{OrderId}");                 
             }
             catch (Exception e)
             {
@@ -73,6 +73,4 @@
             await Task.Delay(TimeSpan.FromSeconds(4));
         }
     }
-
-
 }

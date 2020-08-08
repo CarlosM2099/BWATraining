@@ -578,8 +578,16 @@ input[type=range] {
     text-transform: uppercase;
 }
 
-.track-order > div {
+.track-order {
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
+    .track-order > div {
+        overflow-y: hidden
+    }
 
 .track-order-title {
     background-color: #eee;
@@ -588,7 +596,7 @@ input[type=range] {
     padding: 1rem 3rem;
 }
 
-track-order-title h2 {
+.track-order-title h2 {
     color: #c03939;
     font-size: 1rem;
     font-weight: 300;
@@ -599,4 +607,5 @@ track-order-title h2 {
 
 .track-order-body {
     flex-grow: 1;
+    display: flex;
 }
