@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject HttpClient httpClient
+@inject NavigationManager NavigationManager
 
 @code {
     List<PizzaSpecial> specials;
@@ -44,8 +45,11 @@
 
     async Task PlaceOrder()
     {
-        await httpClient.PostAsJsonAsync("orders", order);
+        var response = await httpClient.PostAsJsonAsync("orders", order);
+        var newOrderId = await response.Content.ReadFromJsonAsync<int>();
         order = new Order();
+
+        NavigationManager.NavigateTo($"myorders/{newOrderId}");
     }
 }
 

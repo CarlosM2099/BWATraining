@@ -585,6 +585,7 @@ input[type=range] {
     display: flex;
     flex-direction: column;
 }
+
     .track-order > div {
         overflow-y: hidden
     }
@@ -596,16 +597,26 @@ input[type=range] {
     padding: 1rem 3rem;
 }
 
-.track-order-title h2 {
-    color: #c03939;
-    font-size: 1rem;
-    font-weight: 300;
-    margin: 0;
-    font-family: Bahnschrift, Arial, Helveitca, sans-serif;
-    text-transform: uppercase;
-}
+    .track-order-title h2 {
+        color: #c03939;
+        font-size: 1rem;
+        font-weight: 300;
+        margin: 0;
+        font-family: Bahnschrift, Arial, Helveitca, sans-serif;
+        text-transform: uppercase;
+    }
 
 .track-order-body {
     flex-grow: 1;
     display: flex;
 }
+
+.track-order-details {
+    overflow-y: auto;
+    padding: 1.5rem 3rem;
+    flex-grow: 1;
+}
+
+    .track-order-details ul {
+        list-style-type: none;
+    }

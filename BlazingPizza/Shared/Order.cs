@@ -23,5 +23,7 @@ namespace BlazingPizza.Shared
 
         public string GetFormattedTotalPrice() => GetTotalPrice().ToString("0.00");
 
+        public string GetFormattedCreatedTime() => CreatedTime.ToString("D", new System.Globalization.CultureInfo("es"));
+
     }
 }
