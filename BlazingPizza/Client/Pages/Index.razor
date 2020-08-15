@@ -10,16 +10,6 @@
     {
         specials = await httpClient.GetFromJsonAsync<List<PizzaSpecial>>("specials");
     }
-
-    async Task PlaceOrder()
-    {
-        var response = await httpClient.PostAsJsonAsync("orders", OrderState.Order);
-        var newOrderId = await response.Content.ReadFromJsonAsync<int>();
-
-        OrderState.ResetOrder();
-
-        NavigationManager.NavigateTo($"myorders/{newOrderId}");
-    }
 }
 
 <div class="main">
@@ -60,8 +50,8 @@
     }
     <div class="order-total @(OrderState.Order.Pizzas.Any() ? "" : "hidden")">
         Total:
-        <span class="total-price">@OrderState.Order.GetFormattedTotalPrice()</span>
-        <button class="btn btn-warning" disabled="@(OrderState.Order.Pizzas.Count == 0)" @onclick="@PlaceOrder">Ordenar ></button>
+        <span class="total-price">@OrderState.Order.GetFormattedTotalPrice()</span>        
+        <a class="btn btn-warning" href=@(OrderState.Order.Pizzas.Count == 0 ? "/" :"checkout")>Ordenar ></a>
     </div>
 
 </div>

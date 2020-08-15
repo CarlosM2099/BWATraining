@@ -1,0 +1,40 @@
+﻿@page "/checkout"
+@inject OrderState OrderState
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+@code {
+
+    bool isPosting = false;
+
+    async Task PlaceOrder()
+    {
+        isPosting = true;
+        var response = await HttpClient.PostAsJsonAsync("orders", OrderState.Order);
+        var newOrderId = await response.Content.ReadFromJsonAsync<int>();
+
+        OrderState.ResetOrder();
+
+
+        NavigationManager.NavigateTo($"myorders/{newOrderId}");
+
+        isPosting = false;
+    }
+}
+
+<div class="main">
+    <EditForm Model="OrderState.Order.DeliveryAddress" OnValidSubmit="PlaceOrder" >
+        <div class="checkout-cols">
+            <div class="checout-order-details">
+                <OrderReview Order="OrderState.Order"></OrderReview>
+            </div>
+            <div>
+                <h4>Enviar a...</h4>
+                <AddressEditor Address="OrderState.Order.DeliveryAddress"></AddressEditor>
+            </div>
+        </div>
+        <input type="submit" class="checkout-button btn btn-warning" value="Aceptar la orden" disabled="@isPosting" />
+        <DataAnnotationsValidator>
+        </DataAnnotationsValidator>        
+    </EditForm>
+</div>
