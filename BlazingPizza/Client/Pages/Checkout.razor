@@ -2,10 +2,38 @@
 @inject OrderState OrderState
 @inject NavigationManager NavigationManager
 @inject HttpClient HttpClient
+@inject IJSRuntime JSRuntime
 
 @code {
+    [CascadingParameter]
+    Task<AuthenticationState> AuthenticationStateTask { get; set; }
 
     bool isPosting = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+
+        if (!authState.User.Identity.IsAuthenticated)
+        {
+            await LocalStorage.SetAsync(JSRuntime, "currentOrder", OrderState.Order);
+
+            NavigationManager.NavigateTo("user/signin?redirectUri=/checkout", true);
+        }
+
+        if (!OrderState.Order.Pizzas.Any())
+        {
+            var savedOrder = await LocalStorage.GetAsync<Order>(JSRuntime, "currentOrder");
+
+            if (savedOrder != null)
+            {
+                OrderState.ReplaceOrder(savedOrder);
+                await LocalStorage.DeleteAsync(JSRuntime, "currentOrder");
+            }
+         
+        }
+    }
+
 
     async Task PlaceOrder()
     {
@@ -22,18 +50,27 @@
 }
 
 <div class="main">
-    <EditForm Model="OrderState.Order.DeliveryAddress" OnValidSubmit="PlaceOrder" >
-        <div class="checkout-cols">
-            <div class="checout-order-details">
-                <OrderReview Order="OrderState.Order"></OrderReview>
-            </div>
-            <div>
-                <h4>Enviar a...</h4>
-                <AddressEditor Address="OrderState.Order.DeliveryAddress"></AddressEditor>
-            </div>
-        </div>
-        <input type="submit" class="checkout-button btn btn-warning" value="Aceptar la orden" disabled="@isPosting" />
-        <DataAnnotationsValidator>
-        </DataAnnotationsValidator>        
-    </EditForm>
+
+    <AuthorizeView Context="AuthContext">
+        <NotAuthorized>
+            <h2>Redirigiendote...</h2>
+        </NotAuthorized>
+        <Authorized>
+            <EditForm Model="OrderState.Order.DeliveryAddress" OnValidSubmit="PlaceOrder">
+                <div class="checkout-cols">
+                    <div class="checout-order-details">
+                        <OrderReview Order="OrderState.Order"></OrderReview>
+                    </div>
+                    <div>
+                        <h4>Enviar a...</h4>
+                        <AddressEditor Address="OrderState.Order.DeliveryAddress"></AddressEditor>
+                    </div>
+                </div>
+                <input type="submit" class="checkout-button btn btn-warning" value="Aceptar la orden" disabled="@isPosting" />
+                <DataAnnotationsValidator>
+                </DataAnnotationsValidator>
+            </EditForm>
+        </Authorized>
+    </AuthorizeView>
+
 </div>
