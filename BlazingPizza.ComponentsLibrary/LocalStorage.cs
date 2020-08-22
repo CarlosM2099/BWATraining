@@ -16,5 +16,8 @@ namespace BlazingPizza.ComponentsLibrary
 
         public static ValueTask DeleteAsync(IJSRuntime jSRuntime, string key) =>
             jSRuntime.InvokeVoidAsync("blazorLocalStorage.delete", key);
+
+        public static ValueTask<bool> ContainsAsync(IJSRuntime jSRuntime, string key) =>
+           jSRuntime.InvokeAsync<bool>("blazorLocalStorage.contains", key);
     }
 }
