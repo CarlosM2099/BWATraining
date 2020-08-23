@@ -1,4 +1,5 @@
 ﻿@page "/myorders/{orderId:int}"
+@attribute [Authorize]
 @inject HttpClient HttpClient;
 @using System.Threading;
 @implements IDisposable;
@@ -56,7 +57,7 @@
 
     public void Dispose()
     {
-        pollingCancelationToken?.Cancel();      
+        pollingCancelationToken?.Cancel();
     }
 
     private async Task PollingForUpdates()
@@ -70,7 +71,7 @@
                 invalidOrder = false;
                 order = await HttpClient.GetFromJsonAsync<OrderWithStatus>($"orders/{OrderId}");
 
-                if(order.StatusText == "Entregado")
+                if (order.StatusText == "Entregado")
                 {
                     pollingCancelationToken?.Cancel();
                 }

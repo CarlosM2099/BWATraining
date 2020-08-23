@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using BlazingPizza.Server.Models;
@@ -25,9 +26,10 @@ namespace BlazingPizza.Server.Controllers
 
         [HttpPost]
         public async Task<ActionResult<int>> PlaceOrder(Order order)
-        {            
+        {
             order.CreatedTime = DateTime.Now;
             order.DeliveryLocation = new LatLong(47.613092, -122.205702);
+            order.UserId = User.GetUserId();
 
             foreach (var pizza in order.Pizzas)
             {
@@ -54,6 +56,7 @@ namespace BlazingPizza.Server.Controllers
                 .Include(o => o.Pizzas).ThenInclude(p => p.Special)
                 .Include(o => o.Pizzas).ThenInclude(p => p.Toppings)
                 .ThenInclude(t => t.Topping)
+                .Where(o => o.UserId == User.GetUserId())
                 .OrderByDescending(o => o.CreatedTime)
                 .ToListAsync();
 
@@ -71,6 +74,7 @@ namespace BlazingPizza.Server.Controllers
               .Include(o => o.Pizzas).ThenInclude(p => p.Special)
               .Include(o => o.Pizzas).ThenInclude(p => p.Toppings)
               .ThenInclude(t => t.Topping)
+              .Where(o => o.UserId == User.GetUserId())
               .OrderByDescending(o => o.CreatedTime)
               .Select(o => OrderWithStatus.FromOrder(o))
               .SingleOrDefaultAsync();
