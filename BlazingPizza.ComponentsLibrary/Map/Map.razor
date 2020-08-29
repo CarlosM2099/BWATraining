@@ -1,40 +1,40 @@
 ﻿@inject IJSRuntime  JSRuntime
 
-    <ClientScript>
-        <script>
-            var documentHead = document.querySelector('head');
+<ClientScript>
+    <script>
+        var documentHead = document.querySelector('head');
 
-            var mapScriptRef = document.createElement('script');
-            mapScriptRef.src = "_content/BlazingPizza.ComponentsLibrary/deliveryMap.js"
+        var mapScriptRef = document.createElement('script');
+        mapScriptRef.src = "_content/BlazingPizza.ComponentsLibrary/deliveryMap.js"
 
-            var leaflteScriptRef = document.createElement('script');
-            leaflteScriptRef.src = "_content/BlazingPizza.ComponentsLibrary/leaflet/leaflet.js"
+        var leaflteScriptRef = document.createElement('script');
+        leaflteScriptRef.src = "_content/BlazingPizza.ComponentsLibrary/leaflet/leaflet.js"
 
-            var link = document.createElement('link');
-            link.href = "_content/BlazingPizza.ComponentsLibrary/leaflet/leaflet.css";
-            link.rel = "stylesheet";
+        var link = document.createElement('link');
+        link.href = "_content/BlazingPizza.ComponentsLibrary/leaflet/leaflet.css";
+        link.rel = "stylesheet";
 
-            documentHead.appendChild(link);
-            documentHead.appendChild(leaflteScriptRef);
-            documentHead.appendChild(mapScriptRef);
-        </script>
-    </ClientScript>
-
-    <div style="height: 100%; width: 100%;" id="@elementId">
-
-    </div>
-
-    @code {
-        [Parameter]
-        public List<Marker> Markers { get; set; }
-
-        string elementId = $"map-{Guid.NewGuid()}";
+        documentHead.appendChild(link);
+        documentHead.appendChild(leaflteScriptRef);
+        documentHead.appendChild(mapScriptRef);
 
 
+    </script>
+</ClientScript>
 
-        protected override void OnAfterRender(bool firstRender)
-        {
-            JSRuntime.InvokeVoidAsync("deliveryMap.showOrUpdate", elementId, Markers);
-        }
+<div style="height: 100%; width: 100%;" id="@elementId">
 
+</div>
+
+@code {
+    [Parameter]
+    public List<Marker> Markers { get; set; }
+
+    string elementId = $"map-{Guid.NewGuid()}";
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        JSRuntime.InvokeVoidAsync("deliveryMap.showOrUpdate", elementId, Markers);
     }
+
+}
