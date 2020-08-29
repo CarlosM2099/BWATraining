@@ -1,4 +1,5 @@
 ﻿using BlazingPizza.Shared;
+using Microsoft.JSInterop;
 using System.Collections.Generic;
 
 namespace BlazingPizza.Client.Services
@@ -8,7 +9,7 @@ namespace BlazingPizza.Client.Services
         public Pizza ConfiguringPizza { get; private set; }
         public bool ShowingConfigureDialog { get; private set; }
         public Order Order { get; private set; } = new Order();
-
+        
         public void ShowConfigurePizzaDialog(PizzaSpecial special)
         {
             ConfiguringPizza = new Pizza()
@@ -37,6 +38,7 @@ namespace BlazingPizza.Client.Services
 
         public  void RemoveConfiguredPizza(Pizza pizza)
         {
+           
             Order.Pizzas.Remove(pizza);
         }
 

@@ -2,13 +2,21 @@
 @inject HttpClient httpClient
 @inject NavigationManager NavigationManager
 @inject OrderState OrderState
-
+@inject IJSRuntime JSRuntime
 @code {
     List<PizzaSpecial> specials;
 
     protected async override Task OnInitializedAsync()
     {
         specials = await httpClient.GetFromJsonAsync<List<PizzaSpecial>>("specials");
+    }
+
+    private async Task RemovePizza(Pizza configuredPizza)
+    {
+        if (await JSRuntime.Confirm($"Desea eliminar la pizza {configuredPizza.Special.Name}?"))
+        {
+            OrderState.RemoveConfiguredPizza(configuredPizza);            
+        }
     }
 }
 
@@ -40,7 +48,7 @@
             <h2>Tu Orden</h2>
             @foreach (var configuredPizza in OrderState.Order.Pizzas)
             {
-                <ConfigurePizzaItem Pizza="configuredPizza" OnRemoved="() => OrderState.RemoveConfiguredPizza(configuredPizza)"></ConfigurePizzaItem>
+                <ConfigurePizzaItem Pizza="configuredPizza" OnRemoved="() => RemovePizza(configuredPizza)"></ConfigurePizzaItem>
             }
         </div>
     }
@@ -50,7 +58,7 @@
     }
     <div class="order-total @(OrderState.Order.Pizzas.Any() ? "" : "hidden")">
         Total:
-        <span class="total-price">@OrderState.Order.GetFormattedTotalPrice()</span>        
+        <span class="total-price">@OrderState.Order.GetFormattedTotalPrice()</span>
         <a class="btn btn-warning" href=@(OrderState.Order.Pizzas.Count == 0 ? "/" :"checkout")>Ordenar ></a>
     </div>
 

@@ -1,16 +1,40 @@
 ﻿@inject IJSRuntime  JSRuntime
-<div style="height: 100%; width: 100%;" id="@elementId">
 
-</div>
-@code {
-    [Parameter]
-    public List<Marker> Markers { get; set; }
+    <ClientScript>
+        <script>
+            var documentHead = document.querySelector('head');
 
-    string elementId = $"map-{Guid.NewGuid()}";
+            var mapScriptRef = document.createElement('script');
+            mapScriptRef.src = "_content/BlazingPizza.ComponentsLibrary/deliveryMap.js"
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await JSRuntime.InvokeVoidAsync("deliveryMap.showOrUpdate", elementId, Markers);
+            var leaflteScriptRef = document.createElement('script');
+            leaflteScriptRef.src = "_content/BlazingPizza.ComponentsLibrary/leaflet/leaflet.js"
+
+            var link = document.createElement('link');
+            link.href = "_content/BlazingPizza.ComponentsLibrary/leaflet/leaflet.css";
+            link.rel = "stylesheet";
+
+            documentHead.appendChild(link);
+            documentHead.appendChild(leaflteScriptRef);
+            documentHead.appendChild(mapScriptRef);
+        </script>
+    </ClientScript>
+
+    <div style="height: 100%; width: 100%;" id="@elementId">
+
+    </div>
+
+    @code {
+        [Parameter]
+        public List<Marker> Markers { get; set; }
+
+        string elementId = $"map-{Guid.NewGuid()}";
+
+
+
+        protected override void OnAfterRender(bool firstRender)
+        {
+            JSRuntime.InvokeVoidAsync("deliveryMap.showOrUpdate", elementId, Markers);
+        }
+
     }
-
-}
