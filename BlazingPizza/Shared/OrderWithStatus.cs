@@ -45,7 +45,7 @@ namespace BlazingPizza.Shared
                 message = "Entregado";
                 markers = new List<Marker> 
                 {
-                    ToMapMarker("Ubicacion de entraga",order.DeliveryLocation, true)
+                    ToMapMarker("Ubicacion de entrega",order.DeliveryLocation, true)
                 };
             }
 
