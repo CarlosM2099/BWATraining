@@ -5,15 +5,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace BlazingPizza.Client.Extensions
+namespace BlazingPizza.ComponentsLibrary
 {
     public static class JSRuntimeExtensions
     {
-        public static async ValueTask<bool> Confirm(this IJSRuntime jsRuntime, string message)
-        {
-            return await jsRuntime.InvokeAsync<bool>($"confirm", message);
-        }
-
         public static async Task EvalVoidAsync(this IJSRuntime jsRuntime, string script)
         {
             if (script.Length > 0)
@@ -34,5 +29,6 @@ namespace BlazingPizza.Client.Extensions
 
             return result;
         }
+
     }
 }

@@ -1,9 +1,10 @@
-﻿
-<fieldset>
+﻿@inject IJSRuntime  JSRuntime
+
+<fieldset id="address-fieldset">
     <div class="form-field">
         <label>Nombre</label>
         <div>
-            <InputText @bind-Value="Address.Name" />
+            <InputText @bind-Value="Address.Name" id="address" />
             <ValidationMessage For="() => Address.Name"></ValidationMessage>
         </div>
     </div>
@@ -43,8 +44,17 @@
         </div>
     </div>
 </fieldset>
-    
+
+
 @code {
     [Parameter]
-    public  Address Address { get; set; }
+    public Address Address { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.EvalVoidAsync("var element = document.querySelector('#address-fieldset :first-child > div input'); if(element){{element.focus();}}");
+        }
+    }
 }

@@ -1,7 +1,7 @@
 ﻿@inject IJSRuntime  JSRuntime
 
 <ClientScript>
-    <script>
+    <script>        
         var documentHead = document.querySelector('head');
 
         var mapScriptRef = document.createElement('script');
@@ -17,8 +17,6 @@
         documentHead.appendChild(link);
         documentHead.appendChild(leaflteScriptRef);
         documentHead.appendChild(mapScriptRef);
-
-
     </script>
 </ClientScript>
 
@@ -36,5 +34,4 @@
     {
         JSRuntime.InvokeVoidAsync("deliveryMap.showOrUpdate", elementId, Markers);
     }
-
 }
