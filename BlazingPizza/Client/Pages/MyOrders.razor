@@ -3,48 +3,39 @@
 @inject HttpClient HttpClient
 
 @code {
-    List<OrderWithStatus> ordersWithStatus;
 
-    protected override async Task OnParametersSetAsync()
+    async Task<List<OrderWithStatus>> LoadOrders()
     {
-        ordersWithStatus = await HttpClient.GetFromJsonAsync<List<OrderWithStatus>>("orders");
+        return await HttpClient.GetFromJsonAsync<List<OrderWithStatus>>("orders");
     }
-
-
 }
-    <div class="main">
-        @if (ordersWithStatus == null)
-        {
-            <text>Cargando...</text>
-        }
-        else if (ordersWithStatus.Count == 0)
-        {
+<div class="main">
+    <TemplatedList Loader="LoadOrders" ListGroupClass="orders-list">
+        <Loading>
+            Cargando...
+        </Loading>
+        <Empty>
             <h2>No se ha realizado alguna orden</h2>
             <a class="btn btn-success" href="">Ordena alguna Pizza</a>
-        }
-        else
-        {
-            <div class="list-group orders-list">
-                @foreach (var Item in ordersWithStatus)
-                {
-                    <div class="list-group-item">
-                        <div class="col">
-                            <h5>@Item.Order.GetFormattedCreatedTime()</h5>
-                            Pizzas:
-                            <strong>@Item.Order.Pizzas.Count()</strong>
-                            Precio total:
-                            <strong>$@Item.Order.GetFormattedTotalPrice()</strong>
-                        </div>
-                        <div class="col">
-                            Estatus: <strong>@Item.StatusText</strong>
-                        </div>
-                        <div class="col text-right">
-                            <a href="myorders/@Item.Order.OrderId" class="btn btn-success">
-                                Rastrear &gt;
-                            </a>
-                        </div>
-                    </div>
-                    }
-            </div>
-        }
-    </div>
+        </Empty>
+        <Item Context="item">
+           
+                <div class="col">
+                    <h5>@item.Order.GetFormattedCreatedTime()</h5>
+                    Pizzas:
+                    <strong>@item.Order.Pizzas.Count()</strong>
+                    Precio total:
+                    <strong>$@item.Order.GetFormattedTotalPrice()</strong>
+                </div>
+                <div class="col">
+                    Estatus: <strong>@item.StatusText</strong>
+                </div>
+                <div class="col text-right">
+                    <a href="myorders/@item.Order.OrderId" class="btn btn-success">
+                        Rastrear &gt;
+                    </a>
+                </div>
+            
+        </Item>
+    </TemplatedList>
+</div>

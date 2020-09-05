@@ -3,8 +3,10 @@
 @inject NavigationManager NavigationManager
 @inject OrderState OrderState
 @inject IJSRuntime JSRuntime
+
 @code {
-    List<PizzaSpecial> specials;
+    List<PizzaSpecial>
+    specials;
 
     protected async override Task OnInitializedAsync()
     {
@@ -64,7 +66,9 @@
 
 </div>
 
-@if (OrderState.ShowingConfigureDialog)
-{
-    <ConfigurePizzaDialog Pizza="OrderState.ConfiguringPizza" OnCancel="OrderState.CancelConfigurePizzaDialog" OnConfirm="OrderState.ConfirmConfigurePizzaDialog"></ConfigurePizzaDialog>
-}
+<TemplatedDialog Show="OrderState.ShowingConfigureDialog">
+     
+        <ConfigurePizzaDialog Pizza="OrderState.ConfiguringPizza" OnCancel="OrderState.CancelConfigurePizzaDialog"
+                              OnConfirm="OrderState.ConfirmConfigurePizzaDialog"></ConfigurePizzaDialog>
+    
+</TemplatedDialog>

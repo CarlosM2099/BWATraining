@@ -1,7 +1,7 @@
 ﻿@inject HttpClient httpClient
 
-<div class="dialog-container">
-    <div class="dialog">
+<TemplatedDialog Show="true">
+    
         <div class="dialog-title">
             <h2>@Pizza.Special.Name</h2>
             @Pizza.Special.Description
@@ -65,10 +65,10 @@
                     @Pizza.GetFormattedTotalPrice()
                 </span>
             </span>
-            <button class="btn btn-success ml-auto"  @onclick="OnConfirm">Ordenar ></button>
+            <button class="btn btn-success ml-auto" @onclick="OnConfirm">Ordenar ></button>
         </div>
-    </div>
-</div>
+   
+</TemplatedDialog>
 
 @code {
 
