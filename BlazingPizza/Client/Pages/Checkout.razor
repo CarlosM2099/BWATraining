@@ -30,8 +30,10 @@
                 OrderState.ReplaceOrder(savedOrder);
                 await LocalStorage.DeleteAsync(JSRuntime, "currentOrder");
             }
-         
+
         }
+
+        await RequestNotificationSubscriptionAsync();
     }
 
 
@@ -46,6 +48,16 @@
         NavigationManager.NavigateTo($"myorders/{newOrderId}");
 
         isPosting = false;
+    }
+
+    async Task RequestNotificationSubscriptionAsync()
+    {
+        var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+
+        if(subscription is { })
+        {
+            await HttpClient.PutAsJsonAsync("notifications/subscribe", subscription);
+        }
     }
 }
 

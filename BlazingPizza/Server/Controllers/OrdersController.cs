@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebPush;
+using System.Text.Json;
 
 namespace BlazingPizza.Server.Controllers
 {
@@ -45,6 +47,15 @@ namespace BlazingPizza.Server.Controllers
 
             storeContext.Orders.Attach(order);
             await storeContext.SaveChangesAsync();
+
+            var subscription = await storeContext.NotificationSubscriptions.
+                FirstOrDefaultAsync(u => u.UserId == User.GetUserId());
+
+            if (subscription is { })
+            {
+                _ = TrackAndSendNotificationAsync(order, subscription);
+            }
+
             return order.OrderId;
         }
 
@@ -87,5 +98,42 @@ namespace BlazingPizza.Server.Controllers
             return order;
         }
 
+        private static async Task SendNotificationAsync(Order order, NotificationSubscription subscription, string message)
+        {
+            var publicKey = "BLC8GOevpcpjQiLkO7JmVClQjycvTCYWm6Cq_a7wJZlstGTVZvwGFFHMYfXt6Njyvgx_GlXJeo5cSiZ1y4JOx1o";
+            var privateKey = "OrubzSz3yWACscZXjFQrrtDwCKg-TGFuWhluQ2wLXDo";
+            var pushSubscription = new PushSubscription()
+            {
+                Endpoint = subscription.Url,
+                Auth = subscription.Auth,
+                P256DH = subscription.P256dh
+            };
+
+            var vapiDetails = new VapidDetails("mailto:someone@example.com", publicKey, privateKey);
+            var webPushClient = new WebPushClient();
+
+            try
+            {
+                var payload = JsonSerializer.Serialize(new
+                {
+                    message,
+                    url = $"myorders/{order.OrderId}"
+                });
+
+                await webPushClient.SendNotificationAsync(pushSubscription, payload, vapiDetails);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine($"Error al enviar la notificacion push. {e.Message}");
+            };
+        }
+
+        private static async Task TrackAndSendNotificationAsync(Order order, NotificationSubscription subscription)
+        {
+            await Task.Delay(OrderWithStatus.PreparationDuration);
+            await SendNotificationAsync(order, subscription, "Tu orden ya esta en camino!");
+            await Task.Delay(OrderWithStatus.DeliveryDuration);
+            await SendNotificationAsync(order, subscription, "Tu orden ha sido entregada! Buen provecho!");
+        }
     }
 }
